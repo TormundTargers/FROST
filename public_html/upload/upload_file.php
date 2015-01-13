@@ -10,7 +10,7 @@ if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since t
 	}
     else {
         $addToDb = false;
-		require_once 'libs/avipedia_tripcode.php';
+		require_once '../libs/avipedia_tripcode.php';
 
         // Create/initialise fields for insertion into table
         $title = trim(htmlentities(strip_tags($_POST["title"]), ENT_QUOTES));
@@ -120,11 +120,11 @@ if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since t
             $url = "uploaded_files/$filename";
             $host_code = 1;
 			// Display video
-			echo "<br><video controls><source src='uploaded_files/" . $filename . "' type='" . $_FILES["userfile"]["type"] . "'>Your browser does not support the video tag.</video>";
+			echo "<br><video controls><source src='../uploaded_files/" . $filename . "' type='" . $_FILES["userfile"]["type"] . "'>Your browser does not support the video tag.</video>";
 		}
         if($addToDb) {
             // Connect to database and insert new video
-            require_once 'dbconnect.php';
+            require_once '../dbconnect.php';
             $dbh = dbconnect();
             $sql = 'INSERT INTO videos
                     (title, description, filetype, url, host_code, uploader_ip, uploader_name, tripcode, upload_date)

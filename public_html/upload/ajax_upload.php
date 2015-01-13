@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>FROST - Upload</title>
-    <link rel="stylesheet" type="text/css" href="styles/master.css">
+    <link rel="stylesheet" type="text/css" href="../styles/master.css">
 </head>
 <body>
 

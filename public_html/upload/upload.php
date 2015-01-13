@@ -3,12 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>FROST - Upload video</title>
-    <link rel="stylesheet" type="text/css" href="styles/master.css">
+    <link rel="stylesheet" type="text/css" href="../styles/master.css">
 </head>
 
 <body>
 	<?php
-		include 'banner.html';
+		include '../banner.html';
 	?>
     <div class="main">
         <h2>Upload</h2>
