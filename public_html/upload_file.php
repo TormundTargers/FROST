@@ -71,7 +71,7 @@ if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since t
 			// Set options to get progress bar
 			curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($request, CURLOPT_PROGRESSFUNCTION, 'curl_progress_callback');
-//            curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);    // Potentially altering the upload speed
+//            curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);    // Potentially altering the uploaded_files speed
 			curl_setopt($request, CURLOPT_NOPROGRESS, false); // needed to make progress function work
 			curl_setopt($request, CURLOPT_HEADER, 0);
 			curl_setopt($request, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -88,7 +88,7 @@ if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since t
     					. ';type='	. $_FILES["userfile"]["type"]
 				));
 
-            // Execute the upload and decode the url it was stored at
+            // Execute the uploaded_files and decode the url it was stored at
             $jsonArray = json_decode(curl_exec($request), true);
             $url = $jsonArray['files'][0]['url'];
 
@@ -107,20 +107,20 @@ if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since t
 
 		}
         else {
-			if (file_exists("upload/$filename")) {
+			if (file_exists("uploaded_files/$filename")) {
 				echo $filename . " already exists. ";
 			}
             else {
 				// If requirements of the file are met, move the file from temp to permanent location
 				move_uploaded_file($_FILES["userfile"]["tmp_name"],
-				"upload/$filename");
-				echo "Stored in: " . "upload/$filename";
+				"uploaded_files/$filename");
+				echo "Stored in: " . "uploaded_files/$filename";
 			}
             $addToDb = true;
-            $url = "upload/$filename";
+            $url = "uploaded_files/$filename";
             $host_code = 1;
 			// Display video
-			echo "<br><video controls><source src='upload/" . $filename . "' type='" . $_FILES["userfile"]["type"] . "'>Your browser does not support the video tag.</video>";
+			echo "<br><video controls><source src='uploaded_files/" . $filename . "' type='" . $_FILES["userfile"]["type"] . "'>Your browser does not support the video tag.</video>";
 		}
         if($addToDb) {
             // Connect to database and insert new video
