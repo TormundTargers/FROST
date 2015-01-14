@@ -30,7 +30,7 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
         $uploader_info = explode("#", $_POST["uploader_name"]);
         $uploader_info[0] == "" ? $uploader_name = null : $uploader_name = $uploader_info[0];
         $uploader_name = trim(htmlentities(strip_tags($uploader_name), ENT_QUOTES));
-        $tripcode = mktripcode($uploader_info[1]);
+        $tripcode = count($uploader_info) == 2 ? (mktripcode($uploader_info[1])) : null;
 
         $upload_date = date("Y-m-d H:i:s");
         $filename = trim(htmlentities(strip_tags($_FILES["userFile"]["name"]), ENT_QUOTES));
