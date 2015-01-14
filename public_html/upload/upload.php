@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <td><label for="uploadtopomf">Upload to pomf.se?</label></td>
-                        <td><input type="checkbox" name="uploadtopomf" value="true" id="uploadtopomf"></td>
+                        <td><input type="checkbox" name="uploadtopomf" checked="checked" id="uploadtopomf"></td>
                     </tr>
                     <tr>
                         <td><label for="userFile">Upload:</label></td>
