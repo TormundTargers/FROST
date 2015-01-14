@@ -62,6 +62,8 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
             move_uploaded_file($_FILES["userFile"]["tmp_name"],
                 "../uploaded_files/$filename");
             $uploadResult .= "Stored in: " . "../uploaded_files/$filename";
+            // Sleep for two seconds.
+            sleep(2);
         }
         $url = "../uploaded_files/$filename";
         $host_code = 1;
