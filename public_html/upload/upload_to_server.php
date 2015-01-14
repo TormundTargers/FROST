@@ -31,6 +31,7 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
         $uploader_info[0] == "" ? $uploader_name = null : $uploader_name = $uploader_info[0];
         $uploader_name = trim(htmlentities(strip_tags($uploader_name), ENT_QUOTES));
         $tripcode = count($uploader_info) == 2 ? (mktripcode($uploader_info[1])) : null;
+        $pomf = isset($_POST['uploadtopomf']);
 
         $upload_date = date("Y-m-d H:i:s");
         $filename = trim(htmlentities(strip_tags($_FILES["userFile"]["name"]), ENT_QUOTES));
@@ -46,7 +47,7 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
         $uploadResult .= "Time video completed upload: " . $upload_date . "<br>";
         $uploadResult .= "Trip code of uploader: " . $tripcode . "<br>";
         $uploadResult .= "Uploader ip address: " . $uploader_ip . "<br>";
-        $uploadResult .= "Upload to pomf: " . $_POST["uploadtopomf"] . "<br>";
+        $uploadResult .= "Upload to pomf: " . $pomf . "<br>";
 
         if (file_exists("../uploaded_files/$filename")) {
             $uploadResult .= $filename . " already exists. ";
