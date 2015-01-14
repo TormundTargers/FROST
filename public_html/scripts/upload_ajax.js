@@ -23,6 +23,12 @@
                     }
                 };
                 xhr.open("POST", $id("postForm").action, true);
+                var progressBar = $id("progress");
+                xhr.upload.onprogress = function(e) {
+                    if(e.lengthComputable) {
+                        progressBar.value = (e.loaded / e.total) * 100;
+                    }
+                };
                 xhr.send(formData);
             }
         };

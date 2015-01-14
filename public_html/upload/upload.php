@@ -37,9 +37,11 @@
                         <td><label for="userFile">Upload:</label></td>
                         <td><input type="file" name="userFile" data-max-size="50MiB" id="userFile"></td>
                     </tr>
+                    <tr>
+                        <td><input type="submit" value="Send File"></td>
+                        <td><progress max="100" value="0" id="progress">0%</progress></td>
+                    </tr>
                 </table>
-
-                <input type="submit" value="Send File">
             </form>
             <div id="uploadResult"></div>
         </div>
