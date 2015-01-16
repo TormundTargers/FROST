@@ -2,11 +2,6 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Including PHP files
-require_once '../getwd.php';
-// Get working directory
-$cwd = ("http://" . $_SERVER['HTTP_HOST'] . getwd() . "/");
-
 $uploadResult = null;
 $video = null;
 
@@ -68,7 +63,7 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
         $url = "../uploaded_files/$filename";
         $host_code = 1;
         // Display video
-        $video = "<br><video controls><source src='" . $cwd . "uploaded_files/" . $filename . "' type='" . $_FILES["userFile"]["type"] . "'>Your browser does not support the video tag.</video>";
+        $video = "<br><video controls><source src='../uploaded_files/" . $filename . "' type='" . $_FILES["userFile"]["type"] . "'>Your browser does not support the video tag.</video>";
     }
 }
 else {

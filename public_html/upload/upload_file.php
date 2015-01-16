@@ -1,10 +1,5 @@
 <?php //ini_set('display_errors',1); error_reporting(E_ALL); // Display errors
 
-// Including PHP files
-require_once '../getwd.php';
-// Get working directory
-$cwd = ("http://" . $_SERVER['HTTP_HOST'] . getwd() . "/");
-
 if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since the type can be faked */
 || ($_FILES["userfile"]["type"] == "video/mp4")     /* We should try using finfo_open */
 || ($_FILES["userfile"]["type"] == "video/ogg")
@@ -126,7 +121,7 @@ if ((($_FILES["userfile"]["type"] == "video/webm")  /* <-- This is naive since t
             $url = "uploaded_files/$filename";
             $host_code = 1;
 			// Display video
-			echo "<br><video controls><source src='" . $cwd . "uploaded_files/" . $filename . "' type='" . $_FILES["userfile"]["type"] . "'>Your browser does not support the video tag.</video>";
+			echo "<br><video controls><source src='../uploaded_files/" . $filename . "' type='" . $_FILES["userfile"]["type"] . "'>Your browser does not support the video tag.</video>";
 		}
         if($addToDb) {
             // Connect to database and insert new video
