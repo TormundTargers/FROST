@@ -49,6 +49,10 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
         $uploadResult .= "Uploader ip address: " . $uploader_ip . "<br>";
         $uploadResult .= "Upload to pomf: " . $pomf . "<br>";
 
+        /*
+         * Check if user wanted to upload to pomf
+         * if so, trigger the upload to pomf
+         */
         if (file_exists("../uploaded_files/$filename")) {
             $uploadResult .= $filename . " already exists. ";
         }

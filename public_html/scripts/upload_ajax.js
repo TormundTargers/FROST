@@ -26,8 +26,17 @@
                 var progressBar = $id("progress");
                 xhr.upload.onprogress = function(e) {
                     if(e.lengthComputable) {
-                        progressBar.value = (e.loaded / e.total) * 100;
+                        var progress = (e.loaded / e.total) * 100;
+                        progressBar.value = progress;
+                        $id("percentage").innerHTML = progress.toFixed(2) + "%";
                     }
+                };
+                xhr.upload.onload = function(e) {
+                    /*
+                        if user wanted to upload to pomf
+                        wait 2 seconds then poll 'get_upload_perc.php'
+                        for pomf upload percentage
+                     */
                 };
                 xhr.send(formData);
             }

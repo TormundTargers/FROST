@@ -39,7 +39,11 @@
                     </tr>
                     <tr>
                         <td><input type="submit" value="Send File"></td>
-                        <td><progress max="100" value="0" id="progress">0%</progress></td>
+                        <td><div class="progress-bar">
+                                <progress max="100" value="0" id="progress">0%</progress>
+                                <div id="percentage"></div>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </form>
