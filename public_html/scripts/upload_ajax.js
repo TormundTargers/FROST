@@ -9,7 +9,7 @@
             $id("uploadResult").innerHTML = "Uploading...";
             file = $id("userFile").files[0];
 
-            if (!!file.type.match(/video.*/)) {
+            if ((file.type == "video/webm" || file.type == "video/mp4" || file.type == "video/ogg")) {
                 formData = new FormData($id("postForm"));
             }
             if(formData != null) {
