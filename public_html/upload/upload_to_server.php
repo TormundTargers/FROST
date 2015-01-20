@@ -1,6 +1,11 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+/*  The below error reporting must be turned off for release!
+    Otherwise this script will return warnings as well as the JSON.
+    This causes upload_ajax.js to fail when showing the video
+    and its metadata
+*/
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
 
 $uploadResult = null;
 $video = null;
@@ -15,6 +20,7 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
         $uploadResult = "Error! Return Code: " . $_FILES["userFile"]["error"] . "<br>";
     }
     else {
+        $addToDb;
         require_once '../libs/avipedia_tripcode.php';
         date_default_timezone_set("UTC");
 
@@ -53,21 +59,94 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
          * Check if user wanted to upload to pomf
          * if so, trigger the upload to pomf
          */
-        if (file_exists("../uploaded_files/$filename")) {
-            $uploadResult .= $filename . " already exists. ";
+
+        if($pomf) {
+            function curl_progress_callback($resource, $download_size, $downloaded, $upload_size, $uploaded)
+            {
+                if($upload_size > 0) {
+                    session_start();
+                    $_SESSION['curlProgress'] = $uploaded / $upload_size  * 100;
+                    session_write_close();
+                }
+                ob_flush();
+                flush();
+            }
+
+            // Increase max execution time to a day
+            set_time_limit(86400);
+
+            ob_flush();
+            flush();
+
+            // initialise the curl request
+            $request = curl_init('http://pomf.se/upload.php');
+
+            // Used for compatibility with PHP 5.6+
+            // This allows support for uploading files in CURLOPT_POSTFIELDS using the @ prefix
+            curl_setopt($request, CURLOPT_SAFE_UPLOAD, false);  // This MUSTk be changed to curlfile at a later date
+
+            // Set options to get progress bar
+            curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($request, CURLOPT_PROGRESSFUNCTION, 'curl_progress_callback');
+//            curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);    // Potentially altering the uploaded_files speed
+            curl_setopt($request, CURLOPT_NOPROGRESS, false); // needed to make progress function work
+            curl_setopt($request, CURLOPT_HEADER, 0);
+            curl_setopt($request, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+
+            // send a file
+            curl_setopt($request, CURLOPT_POST, true);
+            curl_setopt(
+                $request,
+                CURLOPT_POSTFIELDS,
+                array(
+                    'files[]' =>
+                        '@' 		. $_FILES["userFile"]["tmp_name"]
+                        . ';filename='	. $_FILES["userFile"]["name"]
+                        . ';type='	. $_FILES["userFile"]["type"]
+                ));
+
+            // Execute the uploaded_files and decode the url it was stored at
+            $jsonArray = json_decode(curl_exec($request), true);
+            $url = $jsonArray['files'][0]['url'];
+
+            // close the session
+            curl_close($request);
+
+            // Check if video was correctly uploaded to pomf
+            if($jsonArray['success']){
+                $addToDb = true;
+                $host_code = 2;
+            }
+            ob_flush();
+            flush();
         }
         else {
-            // If requirements of the file are met, move the file from temp to permanent location
-            move_uploaded_file($_FILES["userFile"]["tmp_name"],
-                "../uploaded_files/$filename");
-            $uploadResult .= "Stored in: " . "../uploaded_files/$filename";
-            // Sleep for two seconds.
-            sleep(2);
+            if (file_exists("../uploaded_files/$filename")) {
+                $uploadResult .= $filename . " already exists. ";
+            }
+            else {
+                // If requirements of the file are met, move the file from temp to permanent location
+                move_uploaded_file($_FILES["userFile"]["tmp_name"],
+                    "../uploaded_files/$filename");
+                $uploadResult .= "Stored in: " . "../uploaded_files/$filename";
+                // Sleep for two seconds.
+                sleep(2);
+            }
+            $addToDb = true;
+            $url = $filename;
+            $host_code = 1;
         }
-        $url = "../uploaded_files/$filename";
-        $host_code = 1;
         // Display video
-        $video = "<br><video controls><source src='../uploaded_files/" . $filename . "' type='" . $_FILES["userFile"]["type"] . "'>Your browser does not support the video tag.</video>";
+        switch ($host_code) {
+            case 1:
+                $video_url = "../uploaded_files/" . $url; break;
+            case 2:
+                $video_url = "http://a.pomf.se/" . $url; break;
+            default:
+                $video_url = "../uploaded_files/" . $url; break;
+        }
+        $video = "<br><video controls><source src='" . $video_url . "' type='" . $_FILES["userFile"]["type"] . "'>Your browser does not support the video tag.</video>";
+        // do database stuff
     }
 }
 else {
