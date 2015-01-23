@@ -81,29 +81,22 @@ if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since t
             // initialise the curl request
             $request = curl_init('http://pomf.se/upload.php');
 
-            // Used for compatibility with PHP 5.6+
-            // This allows support for uploading files in CURLOPT_POSTFIELDS using the @ prefix
-            curl_setopt($request, CURLOPT_SAFE_UPLOAD, false);  // This MUSTk be changed to curlfile at a later date
-
             // Set options to get progress bar
             curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($request, CURLOPT_PROGRESSFUNCTION, 'curl_progress_callback');
-//            curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);    // Potentially altering the uploaded_files speed
-            curl_setopt($request, CURLOPT_NOPROGRESS, false); // needed to make progress function work
+            curl_setopt($request, CURLOPT_NOPROGRESS, false);
             curl_setopt($request, CURLOPT_HEADER, 0);
             curl_setopt($request, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 
             // send a file
+            $cFile = new CURLFile(
+                $_FILES['userFile']['tmp_name'],
+                $_FILES['userFile']['type'],
+                $_FILES['userFile']['name']
+            );
+            $postData = array("files[]" => $cFile);
             curl_setopt($request, CURLOPT_POST, true);
-            curl_setopt(
-                $request,
-                CURLOPT_POSTFIELDS,
-                array(
-                    'files[]' =>
-                        '@' 		. $_FILES["userFile"]["tmp_name"]
-                        . ';filename='	. $_FILES["userFile"]["name"]
-                        . ';type='	. $_FILES["userFile"]["type"]
-                ));
+            curl_setopt($request, CURLOPT_POSTFIELDS, $postData);
 
             // Execute the uploaded_files and decode the url it was stored at
             $jsonArray = json_decode(curl_exec($request), true);
