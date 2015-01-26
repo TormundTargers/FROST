@@ -10,9 +10,17 @@
 $uploadResult = null;
 $video = null;
 
-if ((($_FILES["userFile"]["type"] == "video/webm")  /* <-- This is naive since the type can be faked */
-    || ($_FILES["userFile"]["type"] == "video/mp4")     /* We should try using finfo_open */
-    || ($_FILES["userFile"]["type"] == "video/ogg")
+// Check upload filetype
+$finfo = finfo_open(FILEINFO_MIME, null);
+if (!$finfo) {
+    echo "Failed to open database";
+    exit();
+}
+$upload_type = explode(";", finfo_file($finfo, $_FILES['userFile']['tmp_name']))[0];
+
+if ((($upload_type == "video/webm")
+    || ($upload_type == "video/mp4")
+    || ($upload_type == "video/ogg")
     && ($_FILES["userFile"]["size"] < 50000000)))
 {
     if ($_FILES["userFile"]["error"] > 0) {
