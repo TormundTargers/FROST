@@ -17,6 +17,7 @@ if (!$finfo) {
     exit();
 }
 $upload_type = explode(";", finfo_file($finfo, $_FILES['userFile']['tmp_name']))[0];
+finfo_close($finfo);
 
 if ((($upload_type == "video/webm")
     || ($upload_type == "video/mp4")
